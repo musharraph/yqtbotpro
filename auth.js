@@ -23,7 +23,7 @@ $(document).ready(function() {
             // Simulate API call with timeout
             setTimeout(function() {
                 // Simple validation (in real app, this would be server-side)
-                if (username === 'admin' && password === 'password123') {
+                if (username === 'YQTBRAND' && password === '1235') {
                     localStorage.setItem('yqtLoggedIn', 'true');
                     localStorage.setItem('yqtUsername', username);
                     window.location.href = 'dashboard.html';
