@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YQT BOT PRO - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="chart.css">
+    <style>
+        /* Add this to ensure the chart is visible */
+        #trading-chart {
+            min-height: 400px;
+            background-color: #151515;
+            border: 1px solid #2a2a2a;
+            border-radius: 8px;
+        }
+        
+        canvas#price-chart {
+            display: block;
+            width: 100%;
+            height: 400px;
+        }
+    </style>
+</head>
+<body class="dashboard-body">
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-2 sidebar">
+                <div class="sidebar-header text-center py-4">
+                    <h1 class="dashboard-logo">YQT<span>BOT</span><small>PRO</small></h1>
+                </div>
+                
+                <div class="sidebar-menu">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#dashboard"><i class="bi bi-speedometer2"></i> Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#signals"><i class="bi bi-graph-up"></i> Trading Signals</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#history"><i class="bi bi-clock-history"></i> Signal History</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#news"><i class="bi bi-newspaper"></i> Market News</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#settings"><i class="bi bi-gear"></i> Settings</a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="sidebar-footer text-center py-3">
+                    <button id="logout-btn" class="btn btn-outline-danger btn-sm">
+                        <i class="bi bi-box-arrow-left"></i> Logout
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-md-10 main-content">
+                <div class="top-bar p-3">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <h2>Dashboard</h2>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <div class="user-info">
+                                <span class="user-name">Welcome, Trader</span>
+                                <div class="status-indicator online"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Dashboard Content -->
+                <div id="dashboard-content">
+                    <!-- Market Overview -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="card market-overview">
+                                <div class="card-header">
+                                    <h5>Market Overview</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row" id="market-tickers">
+                                        <div class="col-md-4 col-sm-6">
+                                            <div class="market-ticker">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <div class="ticker-name">Bitcoin</div>
+                                                        <div class="ticker-symbol text-muted">BTC/USD</div>
+                                                    </div>
+                                                    <div class="text-end">
+                                                        <div class="ticker-price">38452.67</div>
+                                                        <div class="ticker-change positive">+2.35%</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-sm-6">
+                                            <div class="market-ticker">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <div class="ticker-name">Euro</div>
+                                                        <div class="ticker-symbol text-muted">EUR/USD</div>
+                                                    </div>
+                                                    <div class="text-end">
+                                                        <div class="ticker-price">1.0742</div>
+                                                        <div class="ticker-change negative">-0.23%</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 col-sm-6">
+                                            <div class="market-ticker">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div>
+                                                        <div class="ticker-name">Gold</div>
+                                                        <div class="ticker-symbol text-muted">GOLD</div>
+                                                    </div>
+                                                    <div class="text-end">
+                                                        <div class="ticker-price">2318.40</div>
+                                                        <div class="ticker-change positive">+0.67%</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                    <!-- Chart and Signals Section -->
+                    <div class="col-md-12">
+                        <div class="card chart-card">
+                            <div class="card-header">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5>Trading Chart</h5>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <iframe src="https://s.tradingview.com/widgetembed/?hideideas=1&overrides=%7B%7D&enabled_features=%5B%5D&disabled_features=%5B%5D&locale=en#%7B%22symbol%22%3A%22NASDAQ%3AAAPL%22%2C%22frameElementId%22%3A%22tradingview_5bb23%22%2C%22interval%22%3A%22D%22%2C%22allow_symbol_change%22%3A%221%22%2C%22save_image%22%3A%221%22%2C%22studies%22%3A%22%5B%5D%22%2C%22theme%22%3A%22light%22%2C%22style%22%3A%221%22%2C%22timezone%22%3A%22Etc%2FUTC%22%2C%22studies_overrides%22%3A%22%7B%7D%22%2C%22utm_medium%22%3A%22widget%22%2C%22utm_campaign%22%3A%22chart%22%2C%22utm_term%22%3A%22NASDAQ%3AAAPL%22%2C%22page-uri%22%3A%22__NHTTP__%22%7D" width="100%" height="400" frameborder="0" allowfullscreen="true"></iframe>
+                            </div>
+                        
+                        <!-- Signal Generator -->
+                        <div class="col-md-4">
+                            <div class="card signal-card">
+                                <div class="card-header">
+                                    <h5>Signal Generator</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="platform-selection mb-3">
+                                        <label class="form-label">Trading Platform</label>
+                                        <select id="platform-select" class="form-select">
+                                            <option value="iqoption">IQ Option</option>
+                                            <option value="olymptrade">Olymp Trade</option>
+                                            <option value="quotex">Quotex</option>
+                                            <option value="binomo">Binomo</option>
+                                            <option value="expertoption">Expert Option</option>
+                                            <option value="pocketoption">Pocket Option</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="trading-pair mb-3">
+                                        <label class="form-label">Trading Pair</label>
+                                        <select id="pair-select" class="form-select">
+                                            <optgroup label="Forex">
+                                                <option value="EUR/USD">EUR/USD</option>
+                                                <option value="GBP/USD">GBP/USD</option>
+                                                <option value="USD/JPY">USD/JPY</option>
+                                                <option value="AUD/USD">AUD/USD</option>
+                                            </optgroup>
+                                            <optgroup label="Crypto">
+                                                <option value="BTC/USD">BTC/USD</option>
+                                                <option value="ETH/USD">ETH/USD</option>
+                                                <option value="XRP/USD">XRP/USD</option>
+                                            </optgroup>
+                                            <optgroup label="OTC Markets">
+                                                <option value="OTC EUR/USD">OTC EUR/USD</option>
+                                                <option value="OTC GBP/USD">OTC GBP/USD</option>
+                                                <option value="OTC USD/JPY">OTC USD/JPY</option>
+                                            </optgroup>
+                                            <optgroup label="Commodities">
+                                                <option value="GOLD">GOLD</option>
+                                                <option value="SILVER">SILVER</option>
+                                                <option value="OIL">OIL</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="signal-timer mb-4">
+                                        <label class="form-label">Expiry Time</label>
+                                        <select id="expiry-select" class="form-select">
+                                            <option value="5">5 Seconds</option>
+                                            <option value="10">10 Seconds</option>
+                                            <option value="30">30 Seconds</option>
+                                            <option value="60">1 Minute</option>
+                                            <option value="300">5 Minutes</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="investment-input mb-4">
+                                        <label class="form-label">Investment Amount</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">$</span>
+                                            <input type="number" id="investment-amount" class="form-control" value="100" min="1" max="10000">
+                                        </div>
+                                        <div class="form-text text-muted">Enter your trade amount</div>
+                                    </div>
+                                    
+                                    <button id="generate-signal" class="btn btn-primary w-100 mb-4">
+                                        <span>Generate Signal</span>
+                                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                                    </button>
+                                    
+                                    <div id="signal-result" class="signal-result d-none">
+                                        <div class="signal-badge mb-2">BUY</div>
+                                        <div class="signal-details">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <div class="detail-label">Pair:</div>
+                                                    <div class="detail-value" id="result-pair">EUR/USD</div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="detail-label">Probability:</div>
+                                                    <div class="detail-value" id="result-probability">87%</div>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-2">
+                                                <div class="col-6">
+                                                    <div class="detail-label">Entry at:</div>
+                                                    <div class="detail-value" id="result-entry">1.0742</div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="detail-label">Expiry:</div>
+                                                    <div class="detail-value" id="result-expiry">5 sec</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div id="profit-calculation" class="profit-calculation d-none">
+                                        <div class="calculation-details">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <div class="detail-label">Investment:</div>
+                                                    <div class="detail-value" id="calc-investment">$100.00</div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="detail-label">Payout Rate:</div>
+                                                    <div class="detail-value" id="calc-payout">85%</div>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-2">
+                                                <div class="col-6">
+                                                    <div class="detail-label">Potential Profit:</div>
+                                                    <div class="detail-value text-success" id="calc-profit">$85.00</div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="detail-label">New Balance:</div>
+                                                    <div class="detail-value" id="calc-balance">$185.00</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="win-streak">
+                                        <div class="streak-label">Current Win Streak:</div>
+                                        <div class="streak-counter"><span id="streak-count">0</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                    <!-- Market News and Signal History -->
+                    <div class="row">
+                        <!-- Market News -->
+                        <div class="col-md-8">
+                            <div class="card news-card">
+                                <div class="card-header">
+                                    <h5>Market News</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="news-container">
+                                        <div class="news-item">
+                                            <div class="news-time">12:45</div>
+                                            <div class="news-title">Fed signals rate cuts may begin in September</div>
+                                            <div class="d-flex align-items-center">
+                                                <span class="news-source">Reuters</span>
+                                                <span class="news-impact high">HIGH</span>
+                                            </div>
+                                        </div>
+                                        <div class="news-item">
+                                            <div class="news-time">11:32</div>
+                                            <div class="news-title">ECB holds interest rates steady as inflation concerns persist</div>
+                                            <div class="d-flex align-items-center">
+                                                <span class="news-source">Bloomberg</span>
+                                                <span class="news-impact medium">MEDIUM</span>
+                                            </div>
+                                        </div>
+                                        <div class="news-item">
+                                            <div class="news-time">10:15</div>
+                                            <div class="news-title">Bitcoin surpasses $38,000 as institutional interest grows</div>
+                                            <div class="d-flex align-items-center">
+                                                <span class="news-source">CoinDesk</span>
+                                                <span class="news-impact medium">MEDIUM</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                        <!-- Signal History -->
+                        <div class="col-md-4">
+                            <div class="card history-card">
+                                <div class="card-header">
+                                    <h5>Recent Signals</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="signal-history">
+                                        <div class="history-item">
+                                            <div class="history-signal buy">BUY</div>
+                                            <div class="history-details">
+                                                <div class="history-pair">EUR/USD</div>
+                                                <div class="history-time">13:45</div>
+                                            </div>
+                                            <div class="history-result win">WIN</div>
+                                        </div>
+                                        <div class="history-item">
+                                            <div class="history-signal sell">SELL</div>
+                                            <div class="history-details">
+                                                <div class="history-pair">GBP/USD</div>
+                                                <div class="history-time">13:30</div>
+                                            </div>
+                                            <div class="history-result win">WIN</div>
+                                        </div>
+                                        <div class="history-item">
+                                            <div class="history-signal buy">BUY</div>
+                                            <div class="history-details">
+                                                <div class="history-pair">GOLD</div>
+                                                <div class="history-time">13:15</div>
+                                            </div>
+                                            <div class="history-result loss">LOSS</div>
+                                            </div>
+                                        </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/lightweight-charts@3.8.0/dist/lightweight-charts.standalone.production.js"></script>
+    
+    <!-- Custom Scripts -->
+    <script src="auth.js"></script>
+    <script src="chart.js"></script>
+    <script src="market.js"></script>
+    <script src="signals.js"></script>
+    <script>
+        // Add this to ensure we show something in the chart area
+        setTimeout(function() {
+            if ($('#trading-chart').is(':empty')) {
+                $('#trading-chart').html(`
+                    <div style="height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle"></i> Chart initialization in progress...
+                        </div>
+                        <div class="spinner-border text-primary"></div>
+                    </div>
+                `);
+                
+                // Try to load chart again
+                $.getScript('js/chart.js');
+            }
+        }, 2000);
+
+        // Direct initialization on page load
+        $(document).ready(function() {
+            // Initialize indicator buttons
+            $('.chart-indicators .btn').on('click', function() {
+                $(this).toggleClass('active');
+                
+                // Show visual feedback
+                const indicator = $(this).data('indicator');
+                let feedbackMessage = '';
+                
+                switch(indicator) {
+                    case 'ma': 
+                        feedbackMessage = 'Moving Average indicator toggled'; 
+                        break;
+                    case 'rsi': 
+                        feedbackMessage = 'RSI indicator toggled'; 
+                        break;
+                    case 'macd': 
+                        feedbackMessage = 'MACD indicator toggled'; 
+                        break;
+                    case 'volume': 
+                        feedbackMessage = 'Volume indicator toggled'; 
+                        break;
+                }
+                
+                // Show temporary notification
+                $('<div class="alert alert-info indicator-alert">' + feedbackMessage + '</div>')
+                    .css({
+                        'position': 'fixed',
+                        'top': '20px',
+                        'right': '20px',
+                        'z-index': '9999',
+                        'opacity': 0
+                    })
+                    .appendTo('body')
+                    .animate({opacity: 1}, 300)
+                    .delay(1500)
+                    .animate({opacity: 0}, 300, function() {
+                        $(this).remove();
+                    });
+            });
+            
+            // Make sidebar links more responsive
+            $('.sidebar-menu .nav-link').on('click', function() {
+                const menuText = $(this).text().trim();
+                
+                // Update the top bar title immediately for visual feedback
+                $('.top-bar h2').text(menuText);
+                
+                // Add visual feedback
+                $(this).css('transition', 'all 0.3s ease')
+                       .css('transform', 'scale(1.05)')
+                       .delay(200)
+                       .queue(function(next) {
+                           $(this).css('transform', 'scale(1)');
+                           next();
+                       });
+            });
+        });
+    </script>
+</body>
+</html> 
