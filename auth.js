@@ -6,10 +6,10 @@ $(document).ready(function() {
     // Simple authentication check
     if (currentPage === 'index.html' || currentPage === '') {
         // On login page
-        if (isLoggedIn === 'true') {
-            // Redirect to dashboard if already logged in
-            window.location.href = 'dashboard.html';
-        }
+        // if (isLoggedIn === 'true') {
+        //     // Redirect to dashboard if already logged in
+        //     window.location.href = 'dashboard.html';
+        // }
         
         // Login button click handler
         $('#login-btn').on('click', function() {
